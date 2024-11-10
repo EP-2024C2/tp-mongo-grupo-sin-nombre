@@ -21,7 +21,9 @@ const productoSchema = new mongoose.Schema({
         nombre: { type: String, required: true },  
         descripcion: { type: String }
     }]
-    //Decidimos hacer una relación incrustada entre producto y componente ya que estos dos esquemas están altamente relacionados y no cambiarán de forma idependiente.
+    //Decidimos hacer una relación incrustada entre producto y componente ya que estos dos modelos están altamente relacionados y no cambiarán de forma idependiente.
+},{
+    collection: 'productos'
 })
 
 const Producto = mongoose.model("Producto", productoSchema)

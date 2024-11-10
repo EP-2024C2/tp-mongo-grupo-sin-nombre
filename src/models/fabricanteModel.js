@@ -1,22 +1,30 @@
 const mongoose = require("../db/mongo.db").mongoose
-
+const { Schema } = require("mongoose")
+ 
 const fabricanteSchema = new mongoose.Schema({
     nombre: {
-        type: String,
+        type: Schema.Types.String,
         required: true
     },
     direccion: {
-        type: String,
+        type: Schema.Types.String,
         required: true
     },
     numeroContacto: {
-        type: Number,
+        type: Schema.Types.Number,
         required: true
     },
     pathIMG: {
-        type: String,
+        type: Schema.Types.String,
+        required: true
+    },
+    productoId:{
+        type: Schema.Types.ObjectId,
+        ref: "Producto",
         required: true
     }
+},{
+    collection : "fabricantes",
 })
 
 const Fabricante = mongoose.model("Fabricante", fabricanteSchema)
