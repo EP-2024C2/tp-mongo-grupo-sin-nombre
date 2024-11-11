@@ -27,6 +27,14 @@ const fabricanteSchema = new mongoose.Schema({
     collection : "fabricantes",
 })
 
+fabricanteSchema.set('toJSON', {
+    virtuals: true,
+    transform: (_, ret) => {
+      delete ret.__v;
+      delete ret._id;
+    }
+  })
+
 const Fabricante = mongoose.model("Fabricante", fabricanteSchema)
 
 module.exports = Fabricante

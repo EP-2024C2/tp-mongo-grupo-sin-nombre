@@ -1,5 +1,6 @@
 const Producto = require('../models/productoModel')
-const Fabricante = require('../models/productoModel')
+const Fabricante = require('../models/fabricanteModel')
+//const Componente = require('../models/componenteModel')
 const mongoose = require('../db/mongo.db').mongoose
 const productoController = {}
 
@@ -118,21 +119,21 @@ const getFabricantesById = async (req, res) => {
   }
 productoController.getFabricantesById = getFabricantesById
 
-//Crear componente dentro de producto
+//Crear componente dentro de producto(No funciona)
 
 const associateComponente = async (req, res)=> {
     const productoId = req.params.productoId
     try {
-        const producto = await Producto.findByIdAndUpdate(
+        const producto = await Producto.findByIdAndUpdate(     
             productoId, 
             { $push: { componentes: req.body } }, 
             { new: true }  
-        );
-        console.log('Componente asociado con éxito');
+        )
+        console.log('Componente asociado con éxito')
         res.status(201).json(producto.componentes[producto.componentes.length - 1])
     } catch (err) {
-        console.error('Error al asociar el componente', err);
-        res.status(500).json({error: 'Ups!! Algo salío mal.'})
+        console.error('Error al asociar el componente', err)
+        res.status(500).json({error: 'Algo salió mal'})
     }
 }
 
