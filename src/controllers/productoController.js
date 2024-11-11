@@ -15,7 +15,7 @@ productoController.getProductos = getProductos
 
 const getProductosId = async (req, res) => {
     const id = req.params.id
-    const producto = await Producto.findByPk(id)
+    const producto = await Producto.findById(id)
     if (producto){
         res.status(200).json(producto)
     }
@@ -37,14 +37,14 @@ productoController.createProducto = createProducto
 //Actualizar producto
 
 const updateProducto = async (req, res) => {
-    const {nombre, descripcion, precio, pathImg} = req.body
+    const {nombre, descripcion, precio, pathIMG} = req.body
     try {
         const id = req.params.id
-        const producto = await Producto.findByPk(id)
+        const producto = await Producto.findById(id)
         producto.nombre = nombre;
         producto.descripcion = descripcion;
         producto.precio = precio;
-        producto.pathImg = pathImg;
+        producto.pathIMG = pathIMG;
         await producto.save()
         res.status(200).json(producto)
     }
@@ -56,25 +56,17 @@ productoController.updateProducto = updateProducto
 
 //Eliminar producto
 
-const deleteProducto = async (req, res) => {
-    const modelo = req.modelo || await Producto.findByPk(req.params.id);
-    const cantComponentesAsociados = await modelo.countComponentes()
-    if(cantComponentesAsociados > 0) {
-        res.status(400).json({ message: `no se puede eliminar un producto si tiene componentes asociados` });
-        return
+const deleteProducto = async (req,res) =>{
+    const {id} = req.params
+    try{
+        const producto = await Producto.findByIdAndDelete(id)
+        res.status(200).json({message: "Producto eliminado con éxito"})
+    } catch (error){
+        res.status(500).json({ error: "Error al eliminar el producto", details: error.message })
     }
-    const cantFabricantesAsociados = await modelo.countFabricantes()
-    if(cantFabricantesAsociados > 0) {
-        res.status(400).json({ message: `no se puede eliminar un producto si tiene fabricantes asociados` });
-        return
-    }
-    try {
-        await Producto.destroy({ where: { id: req.params.id } });
-        res.status(200).json({ message: 'Producto eliminado' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    
 }
+
 productoController.deleteProducto = deleteProducto
 
 //Crear fabricante dentro de producto
@@ -91,6 +83,7 @@ productoController.associateFabricante = associateFabricante
 //Obtener todos los fabricantes en producto
 const getFabricantesById = async (req, res) => {
     const _id = new mongoose.Types.ObjectId(req.params.id)
+   try{
     const productos = await Producto.aggregate([
       {
         $match: { _id },
@@ -110,6 +103,7 @@ const getFabricantesById = async (req, res) => {
           descripcion: 1,
           precio: 1,
           pathIMG: 1,
+          componentes: 1,
           "fabricantes.nombre": 1,
           "fabricantes.direccion": 1,
           "fabricantes.numeroContacto": 1,
@@ -118,13 +112,16 @@ const getFabricantesById = async (req, res) => {
       },
     ]);
     res.status(200).json(productos)
+    }catch (err){
+        res.status(500).json({ message: "Error: no se pudo obtener los fabricantes", error: err });
+      }
   }
 productoController.getFabricantesById = getFabricantesById
 
 //Crear componente dentro de producto
 
 const associateComponente = async (req, res)=> {
-/*    const productoId = req.params.productoId
+    const productoId = req.params.productoId
     try {
         const producto = await Producto.findByIdAndUpdate(
             productoId, 
@@ -136,9 +133,40 @@ const associateComponente = async (req, res)=> {
     } catch (err) {
         console.error('Error al asociar el componente', err);
         res.status(500).json({error: 'Ups!! Algo salío mal.'})
-    }*/
+    }
 }
 
 productoController.associateComponente = associateComponente
 
+//Obtener todos los componentes de producto
+
+const getComponentesById = async (req,res) => {
+    const _id = new mongoose.Types.ObjectId(req.params.id)
+    try{
+      const producto = await Producto.aggregate([
+        {
+          $match: {_id}
+        },
+        {
+          $project: {
+            _id: 0,
+            nombre: 1,
+            descripcion: 1,
+            precio: 1,
+            pathIMG: 1,
+            componentes: 1
+          },
+        },
+      ])
+  
+      res.status(200).json(producto)
+  
+    }catch (err){
+      res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
+    }
+  }
+  
+productoController.getComponentesById = getComponentesById
+
+//Export
 module.exports = productoController

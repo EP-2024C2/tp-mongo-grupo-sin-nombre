@@ -12,5 +12,9 @@ productoRoute.put('/productos/:id', productoController.updateProducto)
 productoRoute.delete('/productos/:id',productoController.deleteProducto)
 
 productoRoute.post('/productos/:id/componentes', productoController.associateComponente)
+productoRoute.get('/productos/:id/componentes', productoController.getComponentesById)
+
+productoRoute.post('/productos/:id/fabricantes', productoController.associateFabricante)
+productoRoute.get('/productos/:id/fabricantes', productoController.getFabricantesById)
 
 module.exports = productoRoute
