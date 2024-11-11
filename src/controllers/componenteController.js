@@ -1,4 +1,5 @@
 const Componente = require('../models/componenteModel')
+const Producto = require('../models/productoModel')
 const componenteController = {}
 
 //Obtener todos los componente
@@ -50,7 +51,7 @@ const updateComponente = async (req, res) => {
 }
 componenteController.updateComponente = updateComponente
 
-//Eliminar fabricante
+//Eliminar componente
 
 const deleteComponente = async (req,res) =>{
     const {id} = req.params
@@ -60,11 +61,25 @@ const deleteComponente = async (req,res) =>{
     } catch (error){
         res.status(500).json({error: "Error al eliminar componente", details: error.message })
     }
-    
 }
 
 componenteController.deleteComponente = deleteComponente
 
+  /*Eliminar componente incrustado en producto
+  const deleteComponente = async (req,res) =>{
+  const {productoId, componenteId} = req.params
+  const producto = await Producto.findById(productoId)
+  if(!producto){
+    res.status(404).json({message: 'Producto no encontrado'})
+  }
+  const componenteIndex = producto.componentes.findIndex(componente => componente._id.toString() == componenteId)
+  if(componenteIndex == -1){
+    return res.status(404).json({message: 'Componente no encontrado'})
+  }
+  producto.componentes.splice(componenteIndex, 1)
+  await producto.save()
+  res.status(200).json({message:'Componente eliminado con éxito'})
+*/
 
 //Obtener todos los productos de un fabricante
 const getProductosInComponente = async(req, res) => {

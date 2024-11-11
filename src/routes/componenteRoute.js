@@ -2,6 +2,7 @@ const { Router } = require('express')
 const componenteController = require('../controllers/componenteController')
 const componenteRoute = Router()
 
+//Modificar rutas a producto/id/componente/id etc
 componenteRoute.get('/componentes', componenteController.getComponentes);
 componenteRoute.get('/componentes/:id', componenteController.getComponentesId)
 componenteRoute.post('/componentes', componenteController.createComponente)

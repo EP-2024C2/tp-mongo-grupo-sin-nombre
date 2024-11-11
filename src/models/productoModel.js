@@ -1,4 +1,5 @@
 const mongoose = require("../db/mongo.db").mongoose
+const Componente = require('../models/componenteModel')
 
 const productoSchema = new mongoose.Schema({
     nombre: {
@@ -17,10 +18,13 @@ const productoSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-    componentes: [{
+    componentes: [ //[Componente] no funciona
+    { 
         nombre: { type: String, required: true },  
         descripcion: { type: String }
-    }]
+    }
+]
+
     //Decidimos hacer una relación incrustada entre producto y componente ya que estos dos modelos están altamente relacionados y no cambiarán de forma idependiente.
 },{
     collection: 'productos'

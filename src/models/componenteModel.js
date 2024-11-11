@@ -13,7 +13,7 @@ const componenteSchema = new mongoose.Schema({
 },{
     collection : "componentes",
 })
-
+  
 componenteSchema.set('toJSON', {
     virtuals: true,
     transform: (_, ret) => {
@@ -21,6 +21,7 @@ componenteSchema.set('toJSON', {
       delete ret._id;
     }
   })
+
 const Componente = mongoose.model("Componente", componenteSchema)
 
 module.exports = Componente

@@ -20,8 +20,7 @@ const fabricanteSchema = new mongoose.Schema({
     },
     productoId:{
         type: Schema.Types.ObjectId,
-        ref: "Producto",
-        required: true
+        ref: "Producto"
     }
 },{
     collection : "fabricantes",
