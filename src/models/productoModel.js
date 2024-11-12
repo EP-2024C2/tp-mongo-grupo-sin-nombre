@@ -1,5 +1,4 @@
 const mongoose = require("../db/mongo.db").mongoose
-const Componente = require('../models/componenteModel')
 
 const productoSchema = new mongoose.Schema({
     nombre: {
@@ -18,7 +17,7 @@ const productoSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-    componentes: [ //[Componente] no funciona
+    componentes: [ 
     { 
         nombre: { type: String, required: true },  
         descripcion: { type: String }

@@ -1,6 +1,5 @@
 const Producto = require('../models/productoModel')
 const Fabricante = require('../models/fabricanteModel')
-const Componente = require('../models/componenteModel')
 const mongoose = require('../db/mongo.db').mongoose
 const productoController = {}
 
@@ -139,37 +138,63 @@ const associateComponente = async (req, res)=> {
 
 productoController.associateComponente = associateComponente
 
+//Actualizar componente de un producto
+const updateComponente = async (req, res) => {
+  const {componentes} = req.body
+  const {productoId, componenteId} = req.params
+  const producto = await Producto.findById(productoId)
+  if(!producto){
+    res.status(404).json({message: 'Producto no encontrado'})
+  }
+  const componenteIndex = producto.componentes.findIndex(componente => componente._id.toString() == componenteId)
+  if(componenteIndex == -1){
+    return res.status(404).json({message: 'Componente no encontrado'})
+  }
+  producto.componentes = componentes
+  await producto.save()
+  res.status(200).json({message:'Componente modificado con éxito'})
+}
+productoController.updateComponente = updateComponente
+
+//Obtener un componente en particular
+
+const getComponenteId = async (req,res) => {
+  //incompleto
+}
+
+productoController.getComponenteId = getComponenteId
+
 //Obtener todos los componentes de producto
 
-const getComponentesById = async (req,res) => {
-    const _id = new mongoose.Types.ObjectId(req.params.id)
-    try{
-      const producto = await Producto.aggregate([
-        {
-          $match: {_id}
+const getComponentes = async (req,res) => {
+  const _id = new mongoose.Types.ObjectId(req.params.id)
+  try{
+    const producto = await Producto.aggregate([
+      {
+        $match: {_id}
+      },
+      {
+        $project: {
+          _id: 0,
+          nombre: 1,
+          descripcion: 1,
+          precio: 1,
+          pathIMG: 1,
+          componentes: 1
         },
-        {
-          $project: {
-            _id: 0,
-            nombre: 1,
-            descripcion: 1,
-            precio: 1,
-            pathIMG: 1,
-            componentes: 1
-          },
-        },
-      ])
-  
-      res.status(200).json(producto)
-  
-    }catch (err){
-      res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
-    }
-  }
-  
-productoController.getComponentesById = getComponentesById
+      },
+    ])
 
-/*Eliminar componente incrustado en producto
+    res.status(200).json(producto)
+
+  }catch (err){
+    res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
+  }
+}
+  
+productoController.getComponentes= getComponentes
+
+//Eliminar componente incrustado en producto
   const deleteComponente = async (req,res) =>{
   const {productoId, componenteId} = req.params
   const producto = await Producto.findById(productoId)
@@ -183,7 +208,10 @@ productoController.getComponentesById = getComponentesById
   producto.componentes.splice(componenteIndex, 1)
   await producto.save()
   res.status(200).json({message:'Componente eliminado con éxito'})
-*/
+}
+
+productoController.deleteComponente = deleteComponente
+
 
 //Export
 module.exports = productoController
