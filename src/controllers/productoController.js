@@ -118,7 +118,7 @@ const getFabricantesById = async (req, res) => {
   }
 productoController.getFabricantesById = getFabricantesById
 
-//Crear componente dentro de producto(No funciona)
+//Crear componente dentro de producto
 
 const associateComponente = async (req, res)=> {
   const productoId = req.params.productoId
@@ -156,10 +156,34 @@ const updateComponente = async (req, res) => {
 }
 productoController.updateComponente = updateComponente
 
-//Obtener un componente en particular
+//Obtener un componente en particular(No funciona)
 
 const getComponenteId = async (req,res) => {
-  //incompleto
+  const {productoId, componenteId} = req.params
+  try{
+    const producto = await Producto.aggregate([
+      {
+        $match: {productoId},
+        $match: {componenteId}
+      },
+      {
+        $project: {
+          _id: 0,
+          nombre: 1,
+          descripcion: 1,
+          precio: 1,
+          pathIMG: 1,
+          componentes: 1
+        },
+      },
+    ])
+
+    res.status(200).json(producto)
+
+  }catch (err){
+    res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
+  }
+ 
 }
 
 productoController.getComponenteId = getComponenteId

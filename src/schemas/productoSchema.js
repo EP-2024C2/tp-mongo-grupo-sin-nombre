@@ -19,13 +19,16 @@ const productoSchema = Joi.object().keys({
         "number.base": "El campo precio debe ser un número",
 
     }),
-    pathImg: Joi.string().required().messages({
-        "any.required": "El campo pathImg es obligatorio",
-        "string.empty": "El campo pathImg no puede estar vacio"  
+    pathIMG: Joi.string().required().messages({
+        "any.required": "El campo pathIMG es obligatorio",
+        "string.empty": "El campo pathIMG no puede estar vacio"  
+
+    }),
+    componentes: Joi.array().required().messages({
+        "any.required": "El campo componentes es obligatorio",
+        "string.empty": "El campo componentes no puede estar vacio"  
 
     })
 })
-
-//Faltaría agregar "componentes"
 
 module.exports = productoSchema
