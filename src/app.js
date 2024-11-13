@@ -6,6 +6,7 @@ const routes = require('./routes')
 
 app.use(express.json())
 app.use(routes.productoRoute)
+app.use(routes.fabricanteRoute)
 
 app.listen(PORT, async ()=> {
     console.log(`Aplicación iniciada en el puerto ${PORT}`)
