@@ -156,10 +156,10 @@ const updateComponente = async (req, res) => {
 }
 productoController.updateComponente = updateComponente
 
-//Obtener un componente en particular(No funciona)
+//Obtener un componente en particular
 
 const getComponenteId = async (req,res) => {
-  const {productoId, componenteId} = req.params
+  const {productoId, componenteId} = new mongoose.Types.ObjectId(req.params.id)
   try{
     const producto = await Producto.aggregate([
       {
@@ -177,15 +177,18 @@ const getComponenteId = async (req,res) => {
         },
       },
     ])
-
+    //const productoid = await Producto.findById(productoId).select('componentes');
+    //if (!productoid) {
+    //  return res.status(404).json({ error: `El ID ${idProducto} no corresponde a ningún producto.` });
+    //}
+    //const componente = await producto.componentes.findById(componenteId)
+    //console.log(componente)
     res.status(200).json(producto)
 
   }catch (err){
     res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
   }
- 
 }
-
 productoController.getComponenteId = getComponenteId
 
 //Obtener todos los componentes de producto
