@@ -177,12 +177,6 @@ const getComponenteId = async (req,res) => {
         },
       },
     ])
-    //const productoid = await Producto.findById(productoId).select('componentes');
-    //if (!productoid) {
-    //  return res.status(404).json({ error: `El ID ${idProducto} no corresponde a ningún producto.` });
-    //}
-    //const componente = await producto.componentes.findById(componenteId)
-    //console.log(componente)
     res.status(200).json(producto)
 
   }catch (err){

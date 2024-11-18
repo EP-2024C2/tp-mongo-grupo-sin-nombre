@@ -17,7 +17,7 @@ productoRoute.get('/productos/:id/fabricantes',productoMiddleware.existsById(Pro
 //Componentes 
 productoRoute.get('/productos/:id/componentes', productoMiddleware.existsById(Producto), productoController.getComponentes)
 productoRoute.get('/productos/:productoId/componentes/:componenteId',productoMiddleware.existsById(Producto), productoController.getComponenteId)
-productoRoute.post('/productos/:productoId/componentes', productoController.associateComponente)
+productoRoute.post('/productos/:productoId/componentes',productoMiddleware.existsById(Producto), productoController.associateComponente)
 productoRoute.put('/productos/:productoId/componentes/:componenteId', productoMiddleware.existsById(Producto),productoController.updateComponente)
 productoRoute.delete('/productos/:productoId/componentes/:componenteId',productoMiddleware.existsById(Producto), productoController.deleteComponente)
 
