@@ -121,10 +121,10 @@ productoController.getFabricantesById = getFabricantesById
 //Crear componente dentro de producto
 
 const associateComponente = async (req, res)=> {
-  const productoId = req.params.productoId
+  const id = req.params.id
   try {
       const producto = await Producto.findByIdAndUpdate(     
-          productoId, 
+        id, 
           { $push: { componentes: req.body } }, 
           { new: true }  
       )
@@ -159,30 +159,13 @@ productoController.updateComponente = updateComponente
 //Obtener un componente en particular
 
 const getComponenteId = async (req,res) => {
-  const {productoId, componenteId} = new mongoose.Types.ObjectId(req.params.id)
-  try{
-    const producto = await Producto.aggregate([
-      {
-        $match: {productoId},
-        $match: {componenteId}
-      },
-      {
-        $project: {
-          _id: 0,
-          nombre: 1,
-          descripcion: 1,
-          precio: 1,
-          pathIMG: 1,
-          componentes: 1
-        },
-      },
-    ])
-    res.status(200).json(producto)
-
-  }catch (err){
-    res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
-  }
+  const _id = req.params.id
+    const _idComponente = req.params.componenteId
+    const producto = await Producto.findById(_id)
+    const componente = producto.componentes.id(_idComponente)
+    res.status(200).json(componente)
 }
+
 productoController.getComponenteId = getComponenteId
 
 //Obtener todos los componentes de producto
@@ -217,18 +200,14 @@ productoController.getComponentes= getComponentes
 
 //Eliminar componente incrustado en producto
   const deleteComponente = async (req,res) =>{
-  const {productoId, componenteId} = req.params
-  const producto = await Producto.findById(productoId)
-  if(!producto){
-    res.status(404).json({message: 'Producto no encontrado'})
-  }
-  const componenteIndex = producto.componentes.findIndex(componente => componente._id.toString() == componenteId)
-  if(componenteIndex == -1){
-    return res.status(404).json({message: 'Componente no encontrado'})
-  }
-  producto.componentes.splice(componenteIndex, 1)
-  await producto.save()
-  res.status(200).json({message:'Componente eliminado con éxito'})
+    const _id = req.params.id
+    const _idComponente = req.params.componenteId
+    const producto = await Producto.findByIdAndUpdate(
+        _id,
+        { $pull: { componentes: { _id: _idComponente } } },
+        { new: true }
+    )
+    res.status(200).json(producto)
 }
 
 productoController.deleteComponente = deleteComponente
