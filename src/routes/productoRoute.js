@@ -19,6 +19,6 @@ productoRoute.get('/productos/:id/componentes', productoMiddleware.existsById(Pr
 productoRoute.get('/productos/:id/componentes/:componenteId',productoMiddleware.existsById(Producto), productoController.getComponenteId)
 productoRoute.post('/productos/:id/componentes',productoMiddleware.existsById(Producto), productoController.associateComponente)
 productoRoute.put('/productos/:id/componentes/:componenteId', productoMiddleware.existsById(Producto),productoController.updateComponente)
-productoRoute.delete('/productos/:id/componentes/:componenteId',productoMiddleware.existsById(Producto), productoController.deleteComponente)
+productoRoute.delete('/productos/:id/componentes/:idComponente',productoMiddleware.existsById(Producto), productoController.deleteComponente)
 
 module.exports = productoRoute

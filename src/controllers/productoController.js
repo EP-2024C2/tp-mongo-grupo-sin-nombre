@@ -84,6 +84,7 @@ const associateFabricante = async(req,res) =>{
 
     if (!producto.fabricantes.includes(fabricante._id)) {
         producto.fabricantes.push(fabricante._id)
+
         await producto.save()
     }
 
@@ -99,39 +100,24 @@ productoController.associateFabricante = associateFabricante
 
 //Obtener todos los fabricantes en producto
 const getFabricantesById = async (req, res) => {
-    const _id = new mongoose.Types.ObjectId(req.params.id)
-   try{
-    const productos = await Producto.aggregate([
+  const _id = new mongoose.Types.ObjectId(req.params.id)
+  try{
+    const producto = await Producto.aggregate([
       {
-        $match: { _id },
-      },
-      {
-        $lookup: {
-          from: "fabricantes",
-          localField: "_id",
-          foreignField: "productoId",
-          as: "fabricantes",
-        },
+        $match: {_id}
       },
       {
         $project: {
-          _id: 0,
-          nombre: 1,
-          descripcion: 1,
-          precio: 1,
-          pathIMG: 1,
-          componentes: 1,
-          "fabricantes.nombre": 1,
-          "fabricantes.direccion": 1,
-          "fabricantes.numeroContacto": 1,
-          "fabricantes.pathIMG": 1,
+          fabricantes: 1
         },
       },
-    ]);
-    res.status(200).json(productos)
-    }catch (err){
-        res.status(500).json({ message: "Error: no se pudo obtener los fabricantes", error: err });
-      }
+    ])
+
+    res.status(200).json(producto)
+
+  }catch (err){
+    res.status(500).json({ message: "Error: no se pudo obtener los componentes", error: err });
+  }
   }
 productoController.getFabricantesById = getFabricantesById
 
@@ -158,8 +144,8 @@ productoController.associateComponente = associateComponente
 //Actualizar componente de un producto
 const updateComponente = async (req, res) => {
   const {componentes} = req.body
-  const {productoId, componenteId} = req.params
-  const producto = await Producto.findById(productoId)
+  const {id, componenteId} = req.params
+  const producto = await Producto.findById(id)
   if(!producto){
     res.status(404).json({message: 'Producto no encontrado'})
   }
@@ -217,11 +203,11 @@ productoController.getComponentes= getComponentes
 
 //Eliminar componente incrustado en producto
   const deleteComponente = async (req,res) =>{
-    const _id = req.params.id
-    const _idComponente = req.params.componenteId
+    const id = req.params.id
+    const idComponente = req.params.componenteId
     const producto = await Producto.findByIdAndUpdate(
-        _id,
-        { $pull: { componentes: { _id: _idComponente } } },
+        id,
+        { $pull: { componentes: {id: idComponente } } },
         { new: true }
     )
     res.status(200).json(producto)
