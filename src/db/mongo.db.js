@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 //Nombre de la base de datos: productosDB
-const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/productosDB?authSource=admin"
+const MONGO_URL = process.env.MONGO_URL || "mongodb://admin:admin1234@localhost:27017/"
 
 async function connectToDatabase() {
   try {
