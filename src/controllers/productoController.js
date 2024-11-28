@@ -72,10 +72,27 @@ productoController.deleteProducto = deleteProducto
 //Crear fabricante dentro de producto
 
 const associateFabricante = async(req,res) =>{
-    const id = req.params.id
-    const nuevoFabricante = {...req.body, productoId: new mongoose.Types.ObjectId(id)}
-    const fabricante = await Fabricante.create(nuevoFabricante)
-    res.status(201).json(fabricante)
+    const _id = req.params.id
+    const fabricanteBody = req.body
+    const producto = await Producto.findById(_id)
+
+    let fabricante = await Fabricante.findOne({ nombre: fabricanteBody.nombre });
+
+    if (!fabricante) {
+        fabricante = await Fabricante.create(fabricanteBody)
+    }
+
+    if (!producto.fabricantes.includes(fabricante._id)) {
+        producto.fabricantes.push(fabricante._id)
+        await producto.save()
+    }
+
+    if (!fabricante.productos.includes(producto._id)) {
+        fabricante.productos.push(producto._id)
+        await fabricante.save()
+    }
+
+    res.status(200).json(producto)
 }
 
 productoController.associateFabricante = associateFabricante

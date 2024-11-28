@@ -21,7 +21,12 @@ const fabricanteSchema = new mongoose.Schema({
     productoId:{
         type: Schema.Types.ObjectId,
         ref: "Producto"
-    }
+    },
+    productos: [{
+        type: Schema.Types.ObjectId,
+        ref: "Producto"
+    }]
+    
 },{
     collection : "fabricantes",
 })
